@@ -76,8 +76,8 @@ def traverse_container(container_id: str, is_product: bool = False) -> None:
     while len(children) > 0:
         parse_result(data, is_product)
 
-        current_offset += page_size
-        data = make_request(f'{BASE_URL}/container/{container_id}?size=100&start={current_offset}')
+        current_offset += len(children)
+        data = make_request(f'{BASE_URL}/container/{container_id}?size={page_size}&start={current_offset}')
         children = data['data']['relationships']['children']['data']
 
     CONTAINER_LIST.append(container_id)
@@ -110,7 +110,16 @@ def main(args):
 
     FILE_BASE = str(args.output_file_directory)
     BASE_URL = f'https://store.playstation.com/valkyrie-api/{language_code}/{country_code}/999'
-    FILE = open(os.path.join(FILE_BASE, f'{language_code}-{country_code}.txt'), 'w')
+
+    if os.path.exists(os.path.join(FILE_BASE, f'{language_code}-{country_code}.txt')):
+        FILE = open(os.path.join(FILE_BASE, f'{language_code}-{country_code}.txt'), 'r+')
+        PRODUCT_LIST = FILE.read().splitlines()
+
+        CONTAINER_LIST = PRODUCT_LIST.copy()
+        print("opening existing file, got `{}` entries".format(len(PRODUCT_LIST)))
+
+    else:
+        FILE = open(os.path.join(FILE_BASE, f'{language_code}-{country_code}.txt'), 'w')
 
     tmpres = SESSION.post(
         url='https://store.playstation.com/kamaji/api/valkyrie_storefront/00_09_000/user/session',
