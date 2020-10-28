@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "playstation_content_ids"
+version = "0.1.0"
+description = "scripts and files related to getting the playstation content ids from the store"
+authors = ["Mark Grandi <markgrandi@gmail.com>", "Landcross#5410"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+requests = "^2.24.0"
+arrow = "^0.17.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
