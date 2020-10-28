@@ -154,7 +154,7 @@ def isDirectoryType(filePath):
 
     # double check to see if its a file
     if not path_resolved.is_dir():
-        raise argparse.ArgumentTypeError("The path `{}` is not a file!".format(path_resolved))
+        raise argparse.ArgumentTypeError("The path `{}` is not a directory!".format(path_resolved))
 
     return path_resolved
 
