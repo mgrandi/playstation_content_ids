@@ -31,7 +31,8 @@ optional arguments:
 
 ```plaintext
 
-py -3 C:\Users\mgrandi\Desktop\ps_store\lzma_files.py  "C:\Users\mgrandi\Desktop\ps_store\finished_regions_sourcefiles" "C:\Users\mgrandi\Code\Personal\git\playstation_content_ids\regions"
+$ py -3 C:\Users\mgrandi\Desktop\ps_store\lzma_files.py  "C:\Users\mgrandi\Desktop\ps_store\finished_regions_sourcefiles" "C:\Users\mgrandi\Code\Personal\git\playstation_content_ids\regions"
+
 INFO:main:compressing `C:\Users\mgrandi\Desktop\ps_store\finished_regions_sourcefiles\ar-sa.txt` to `C:\Users\mgrandi\Code\Personal\git\playstation_content_ids\1\ar-sa.txt.xz`
 INFO:main:compressing `C:\Users\mgrandi\Desktop\ps_store\finished_regions_sourcefiles\de-de.txt` to `C:\Users\mgrandi\Code\Personal\git\playstation_content_ids\1\de-de.txt.xz`
 INFO:main:compressing `C:\Users\mgrandi\Desktop\ps_store\finished_regions_sourcefiles\es-es.txt` to `C:\Users\mgrandi\Code\Personal\git\playstation_content_ids\1\es-es.txt.xz`
@@ -49,15 +50,18 @@ downloads a list of SKU / content ids from the store given a region
 
 ```plaintext
 
-python .\old_psn_product_fetcher.py --help
-usage: old_psn_product_fetcher [-h] region_language region_country
+$ python .\old_psn_product_fetcher.py --help
+
+usage: old_psn_product_fetcher [-h] [--output_file_directory OUTPUT_FILE_DIRECTORY] region_language region_country
 
 positional arguments:
-  region_language  the region language, aka the `en` in `en-US`
-  region_country   the region country, aka the `US` in `en-US`
+  region_language       the region language, aka the `en` in `en-US`
+  region_country        the region country, aka the `US` in `en-US`
 
 optional arguments:
-  -h, --help       show this help message and exit
+  -h, --help            show this help message and exit
+  --output_file_directory OUTPUT_FILE_DIRECTORY
+                        where to write the resulting file to, defaults to current directory
 
 ```
 
@@ -65,12 +69,12 @@ optional arguments:
 #### example
 
 ```plaintext
-python .\old_psn_product_fetcher.py en us
+python .\old_psn_product_fetcher.py en us --output_file_directory ../
+
 language code: `en`, country code: `us`
-starting at `2020-10-28T02:21:41.805038+00:00`
+starting at `2020-10-28T02:31:16.023758+00:00`
 
+# etc etc
 
-....
-....
 ```
 
