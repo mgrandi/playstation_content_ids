@@ -106,7 +106,7 @@ def main(args):
     print("language code: `{}`, country code: `{}`".format(language_code, country_code))
     print("starting at `{}`".format(start_time))
 
-    global BASE_URL, FILE, FILE_BASE
+    global BASE_URL, FILE, FILE_BASE, PRODUCT_LIST, CONTAINER_LIST
 
     FILE_BASE = str(args.output_file_directory)
     BASE_URL = f'https://store.playstation.com/valkyrie-api/{language_code}/{country_code}/999'
