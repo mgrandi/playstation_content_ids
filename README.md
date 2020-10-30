@@ -30,7 +30,7 @@ usage: old_psn_product_fetcher [-h] [--output_file_directory OUTPUT_FILE_DIRECTO
 
 positional arguments:
   region_language       the region language, aka the `en` in `en-us`
-  region_country        the region country, aka the `US` in `en-us`
+  region_country        the region country, aka the `us` in `en-us`
 
 optional arguments:
   -h, --help            show this help message and exit
