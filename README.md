@@ -18,6 +18,98 @@ These files can be used as input for other scraping and dumping tools (see [@mgr
 
 ## `scripts` folder
 
+### `merge.py`
+
+A fancy wrapper around a whole host of commands, such as `cat`, `xzcat`, `wc -l`, `sort`,`uniq` and `dos2unix`. Basically lets you merge multiple files together (either `txt`, `xz` , or both!) and then passes the combined output through `dos2unix` / `sort` / `uniq` to get the most up to date output given several files in txt or xz format
+
+```plaintext
+$ python3 merge.py --help
+usage: merge.py [-h] [--verbose] --output OUTPUT files [files ...]
+
+helper for merging a mixture of text files and xz compressed text files
+
+positional arguments:
+  files            the files to merge
+
+optional arguments:
+  -h, --help       show this help message and exit
+  --verbose        increase logger verbosity
+  --output OUTPUT  the path to save the merged file (full filepath)
+```
+
+#### example 1
+
+```plaintext
+
+$ python3 merge.py --output done/zh-hant-tw.txt psn/zh-hant-tw.txt /mnt/c/Users/mgrandi/Code/Personal/git/playstation_content_ids/regions/zh-hant-tw.txt.xz
+INFO - sha256 of `/mnt/e/ps_store_externaldisk/merging/psn/zh-hant-tw.txt` is `7a17e744909226074639102e661d58eb116f92add2f2e2697a2821a4b155c424`
+INFO - line # of `/mnt/e/ps_store_externaldisk/merging/psn/zh-hant-tw.txt` is `b'54904 /mnt/e/ps_store_externaldisk/merging/psn/zh-hant-tw.txt\n'`
+INFO -
+INFO - sha256 of `/mnt/c/Users/mgrandi/Code/Personal/git/playstation_content_ids/regions/zh-hant-tw.txt.xz` is `e2cfc9302c3d23e73a777a3e8929d16600b6cfbe0a54d5bdf30bf276ddca786a`
+INFO - sha256 of files within `/mnt/c/Users/auror/Code/Personal/git/playstation_content_ids/regions/zh-hant-tw.txt.xz` is `04ada556631814df27bf40704e5cc4a22348d6a2a5c1fa81490c1776610aba32`
+INFO - line # of files within `/mnt/c/Users/mgrandi/Code/Personal/git/playstation_content_ids/regions/zh-hant-tw.txt.xz` is `b'41494\n'`
+INFO -
+INFO - sha256 of final file (no dos2unix) `/tmp/tmp4qg77pyu/no_dos2unix.txt` is `9df0ca8de2c98c451db54079ff2d92777b2d1bcd3a7f82ae6f74abe5f789bd0a`
+INFO - line # of final file (no dos2unix) `/tmp/tmp4qg77pyu/no_dos2unix.txt` is `b'54904 /tmp/tmp4qg77pyu/no_dos2unix.txt\n'`
+INFO - wrote final file to `/mnt/e/ps_store_externaldisk/merging/done/zh-hant-tw.txt`
+INFO - sha256 of final file `/mnt/e/ps_store_externaldisk/merging/done/zh-hant-tw.txt` is `f17a07408782285a6745fb9b53eccfcd2783b7e96da66da05a68062da7123903`
+INFO - line # of final file `/mnt/e/ps_store_externaldisk/merging/done/zh-hant-tw.txt` is `b'54904 /mnt/e/ps_store_externaldisk/merging/done/zh-hant-tw.txt\n'`
+INFO - done
+
+```
+
+you can see that the line number count from the text file inside `zh-hant-tw.txt.xz`  we had checked into source control from 41494 to 54904, which means you got more entries!
+
+
+#### example 2
+
+```plaintext
+$ python3 merge.py --output done/fr-ch.txt psn/fr-ch.txt /mnt/c/Users/auror/Code/Personal/git/playstation_content_ids/regions/fr-ch.txt.xz
+INFO - sha256 of `/mnt/e/ps_store_externaldisk/merging/psn/fr-ch.txt` is `b5e13f26b511f9e634c428c703f4cf46b1fc4785d6220f94a515cfbc6ce89818`
+INFO - line # of `/mnt/e/ps_store_externaldisk/merging/psn/fr-ch.txt` is `b'48472 /mnt/e/ps_store_externaldisk/merging/psn/fr-ch.txt\n'`
+INFO -
+INFO - sha256 of `/mnt/c/Users/auror/Code/Personal/git/playstation_content_ids/regions/fr-ch.txt.xz` is `353b5aa614f480d7ded049cbbcf294705eeb7adb972bef8ab70b585c7dace423`
+INFO - sha256 of files within `/mnt/c/Users/auror/Code/Personal/git/playstation_content_ids/regions/fr-ch.txt.xz` is `b5e13f26b511f9e634c428c703f4cf46b1fc4785d6220f94a515cfbc6ce89818`
+INFO - line # of files within `/mnt/c/Users/auror/Code/Personal/git/playstation_content_ids/regions/fr-ch.txt.xz` is `b'48472\n'`
+INFO -
+INFO - sha256 of final file (no dos2unix) `/tmp/tmpm0ggiloy/no_dos2unix.txt` is `4855f5dabef2a529919e9d4ba682cff99a4c200323a93367243414bd74bb4d6b`
+INFO - line # of final file (no dos2unix) `/tmp/tmpm0ggiloy/no_dos2unix.txt` is `b'48472 /tmp/tmpm0ggiloy/no_dos2unix.txt\n'`
+INFO - wrote final file to `/mnt/e/ps_store_externaldisk/merging/done/fr-ch.txt`
+INFO - sha256 of final file `/mnt/e/ps_store_externaldisk/merging/done/fr-ch.txt` is `97d248b4d6c499ee10031f7279eb0d804629800b7d498ffba2d8582b7f4fe1ed`
+INFO - line # of final file `/mnt/e/ps_store_externaldisk/merging/done/fr-ch.txt` is `b'48472 /mnt/e/ps_store_externaldisk/merging/done/fr-ch.txt\n'`
+INFO - done
+```
+
+you can see that the line numbers of the `done/fr-ch.txt.xz` and the `fr-ch.txt` are the same, which means you likely didn't get any new entries. Additionally, the sha256 hash of the text file inside `regions/fr-ch.txt.xz`  and the `merging/psn/fr-ch.txt` are also the same, which means that we basically tried to merge two identical files. Why then does the final file (`done/fr-ch.txt`) have a different sha256 hash?  Most likely because the line endings were different, so running `cat | sort | uniq` would equal the same hash as the existing file checked into source control, while doing `cat | dos2unix | sort | uniq` would change the line endings to unix, and therefore change the file
+
+#### example 3
+
+without dos2unix, you will see that the `no_dos2unix.txt` file has a much larger line count than what you would expect:
+
+```plaintext
+
+mark@Alcidae:/mnt/e/ps_store_externaldisk/merging$ python3 merge.py --output done/en-us.txt en-us.txt /mnt/c/Users/auror/Code/Personal/git/playstation_content_ids/regions/en-us.txt.xz
+INFO - sha256 of `/mnt/e/ps_store_externaldisk/merging/en-us.txt` is `d2e307c88619cd70f6c042f68be20d8a28738b2adb74324684d6a36fe344274f`
+INFO - line # of `/mnt/e/ps_store_externaldisk/merging/en-us.txt` is `b'190886 /mnt/e/ps_store_externaldisk/merging/en-us.txt\n'`
+INFO -
+INFO - sha256 of `/mnt/c/Users/auror/Code/Personal/git/playstation_content_ids/regions/en-us.txt.xz` is `0ced567a5ad7bdda5cad92fec21b4216058db43f296bb86e738f1a9c42935a85`
+INFO - sha256 of files within `/mnt/c/Users/auror/Code/Personal/git/playstation_content_ids/regions/en-us.txt.xz` is `1c0803fc1e82e9ffd249534770f2d7904e81e3c9d8d2245f78f771e2fa68aebc`
+INFO - line # of files within `/mnt/c/Users/auror/Code/Personal/git/playstation_content_ids/regions/en-us.txt.xz` is `b'191225\n'`
+INFO -
+INFO - sha256 of final file (no dos2unix) `/tmp/tmpc8hapbx7/no_dos2unix.txt` is `952f7f296923c791d2f30c41fd7247bf81ecf1f0299de77c0bf7130752676daa`
+INFO - line # of final file (no dos2unix) `/tmp/tmpc8hapbx7/no_dos2unix.txt` is `b'382111 /tmp/tmpc8hapbx7/no_dos2unix.txt\n'`
+INFO - wrote final file to `/mnt/e/ps_store_externaldisk/merging/done/en-us.txt`
+INFO - sha256 of final file `/mnt/e/ps_store_externaldisk/merging/done/en-us.txt` is `1c0803fc1e82e9ffd249534770f2d7904e81e3c9d8d2245f78f771e2fa68aebc`
+INFO - line # of final file `/mnt/e/ps_store_externaldisk/merging/done/en-us.txt` is `b'191225 /mnt/e/ps_store_externaldisk/merging/done/en-us.txt\n'`
+INFO - done
+
+```
+
+if you notice, 382111 is actually just 190886 + 191225 , so the combined file after being passed through JUST `sort | uniq` is still saying there were no lines in common to get rid of, which is incorrect. The reason for this is , one file has `CRLF` (DOS/Windows) line endings, and the other has just `LF` (unix) line endings, so each line shows up as different even though they look like they are the same.
+
+Being passed through the command `dos2unix` correctly translates all of the line endings to the same type (unix), and then `sort | uniq` work properly, as shown by the line number count  being a much more reasonable number.
+
+
 ### `old_psn_product_fetcher.py` file
 
 Downloads a list of Content IDs from the old PlayStation Store's API when given a language code (e.g. "en") and country code (e.g. "us").
